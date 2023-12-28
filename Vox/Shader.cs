@@ -1,11 +1,14 @@
+using System.Diagnostics;
 using OpenTK.Graphics.OpenGL4;
 
 public class Shader
 {
     int Handle;
+    Stopwatch _timer = new Stopwatch();
 
     public Shader(string vertexPath, string fragmentPath)
     {
+        _timer.Start();
         int VertexShader;
         int FragmentShader;
 
@@ -59,6 +62,11 @@ public class Shader
 
     public void Use()
     {
+        double timeValue = _timer.Elapsed.TotalSeconds;
+        float greenValue = (float)Math.Sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = GL.GetUniformLocation(Handle, "ourColor");
+        GL.Uniform4(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
         GL.UseProgram(Handle);
     }
 
