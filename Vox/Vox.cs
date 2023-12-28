@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
@@ -22,11 +23,13 @@ class Vox : GameWindow
     int ElementBufferObject;
     int VertexArrayObject;
     Shader shader;
+    Stopwatch _timer = new Stopwatch();
 
     public Vox(int width, int height, string title) :
     base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     {
         shader = new Shader("shader.vert", "shader.frag");
+        _timer.Start();
     }
 
 
@@ -63,6 +66,12 @@ class Vox : GameWindow
 
         // stuff
         shader.Use();
+
+        double timeValue = _timer.Elapsed.TotalSeconds;
+        float greenValue = (float)Math.Sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = GL.GetUniformLocation(shader.Handle, "ourColor");
+        GL.Uniform4(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
         GL.BindVertexArray(VertexArrayObject);
         GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
